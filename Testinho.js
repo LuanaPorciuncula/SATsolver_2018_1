@@ -1,7 +1,12 @@
 
 
-readFormula("tutorial.cnf")
-    
+
+
+
+let formula = readFormula("tutorial.cnf");
+let result = doSolve(formula.clauses, formula.variables, 0);
+console.log(result)
+
 
 function readFormula(FileName){
     let fs = require ('fs');
@@ -21,7 +26,7 @@ function readFormula(FileName){
         result.variables = variables
     }
 
-    console.log(result);
+    
     return result;
 
 }
@@ -116,24 +121,18 @@ function nextAssignment(currentAssignment) {
 
     }
 
-    
     return newAssignment;
 }
 
-function doSolve(clauses, assignment) {
-    let isSat = false
-    let lastAssignment = false;
+function doSolve(clauses, assignment, count) {
+    console.log(count)
+    let isSat = false;
     let clauseValue = false;
     let expressionValue = true;
-
-    for(i = 0; i < assignment; i++){
-        if(assignment[i] != 0){
-            lastAssignment =  true;
-        }
-    }
     
 
-    while ((!isSat) && (!lastAssignment)) {
+
+    while ((!isSat) && (count != Math.pow(2, assignment.length))) {
         
         for (i = 0; i < clauses.length && expressionValue; i++) {
             //checa enquanto a todas as clausulas são true (se for falsa, a expressão toda é falsa)
@@ -141,6 +140,8 @@ function doSolve(clauses, assignment) {
 
             for (j = 0; j < clauses[i].length && !clauseValue; j++) {
                 //checa enquanto a clausula for falsa (se uma for verdadeira, a clausula toda é verdadeira)
+                
+
                 if (clauses[i][j] > 0){
                     if(assignment[Math.abs(clauses[i][j]) - 1] == 1){
                         clauseValue = true;
@@ -161,8 +162,10 @@ function doSolve(clauses, assignment) {
 
         if (expressionValue){
             isSat = true;
-        } else {
+        } else if (!isSat && count!= Math.pow(2, assignment.length)){
             assignment = nextAssignment(assignment);
+            
+            doSolve(clauses,assignment, count + 1);
         }
 
     }
@@ -173,7 +176,7 @@ function doSolve(clauses, assignment) {
         result.satisfyingAssignment = assignment;
     }
 
-    console.log(result);
+    
     return result;
 }
 
