@@ -5,10 +5,23 @@ exports.solve = function(fileName) {
   return result // two fields: isSat and satisfyingAssignment
 }
 
-// Receives the current assignment and produces the next one
 function nextAssignment(currentAssignment) {
-  // implement here the code to produce the next assignment based on currentAssignment. 
-  return newAssignment
+
+  let newAssignment = currentAssignment;
+  
+  for (i = currentAssignment.length - 1; i >= 0; i--){
+
+      if (currentAssignment[i] == 1){
+          newAssignment[i] = 0;
+      } else {
+          newAssignment[i] = 1;
+          break;
+      }
+
+  }
+
+  
+  return newAssignment;
 }
 
 function doSolve(clauses, assignment) {
@@ -32,9 +45,6 @@ function readFormula(fileName) {
   
   let clauses = readClauses(text)
   let variables = readVariables(clauses)
-  
-  // In the following line, text is passed as an argument so that the function
-  // is able to extract the problem specification.
   let specOk = checkProblemSpecification(text, clauses, variables)
 
   let result = { 'clauses': [], 'variables': [] }
@@ -96,11 +106,31 @@ function readVariables(clauses){
           if (!varExist){
             //se o numero não esta na lista de variaveis, adiciona o numero a lista e adiciona um '0'
             //no array variables
-              varList.push(clauses[i][j]);
+              varList.push(Math.abs(clauses[i][j]));
               variables.push('0');
 
           }
       }
   }
   return variables;
+}
+function checkProblemSpecification(text, clauses, variables){
+  let pLineSplit = [];
+
+  for(i = 0; i < text.length; i++) {
+      if( text[i].charAt(0) == 'p'){
+          pLineSplit = text[i].split(" ");
+          
+      }
+  }
+
+  let nVar = pLineSplit[2];
+  let nClauses = pLineSplit[3];
+
+  if (nClauses == clauses.length && nVar == variables.length){
+      return true;
+  } else {
+      return false;
+  }
+
 }
