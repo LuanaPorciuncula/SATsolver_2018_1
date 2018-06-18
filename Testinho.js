@@ -3,18 +3,11 @@
 
 
 
-let formula = readFormula("tutorial.cnf");
+let formula = readFormula("hole4.cnf");
 let result = doSolve(formula.clauses, formula.variables);
 console.log(result);
-formula = readFormula("simple0.cnf");
-result = doSolve(formula.clauses, formula.variables);
-console.log(result);
-formula = readFormula("simple1.cnf");
-result = doSolve(formula.clauses, formula.variables);
-console.log(result);
-formula = readFormula("simple2.cnf");
-result = doSolve(formula.clauses, formula.variables);
-console.log(result);
+
+
 //hole5, pieceOfHole6 aparecem true, mas sem o satisfyingAssignment
 //hole6 aparece como verdadeiro, mas é falso. e tbm sem o satisfyingAssignment, apesar de ter sido
 //detectado como true
@@ -51,17 +44,16 @@ function readClauses(text){
     for ( i = 0; i < text.length; i++){
 
         if (text[i].charAt(0) != 'c' && text[i].charAt(0) != 'p' && text[i] != "") {
-            aux += " "  + text[i];
+            aux += " " + text[i];
         }
         
     }
-
-    clauses = aux.split("0");
+    
+    clauses = aux.split(" 0");
 
     for ( i = 0; i < clauses.length; i++) {
 
         auxArray[i] = clauses[i].split(" ");
-        auxArray[i].pop();
         auxArray[i].splice(0,1);
 
     }
