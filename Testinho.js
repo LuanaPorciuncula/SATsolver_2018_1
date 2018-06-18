@@ -4,9 +4,20 @@
 
 
 let formula = readFormula("tutorial.cnf");
-let result = doSolve(formula.clauses, formula.variables, 0);
-console.log(result)
-
+let result = doSolve(formula.clauses, formula.variables);
+console.log(result);
+formula = readFormula("simple0.cnf");
+result = doSolve(formula.clauses, formula.variables);
+console.log(result);
+formula = readFormula("simple1.cnf");
+result = doSolve(formula.clauses, formula.variables);
+console.log(result);
+formula = readFormula("simple2.cnf");
+result = doSolve(formula.clauses, formula.variables);
+console.log(result);
+//hole5, pieceOfHole6 aparecem true, mas sem o satisfyingAssignment
+//hole6 aparece como verdadeiro, mas é falso. e tbm sem o satisfyingAssignment, apesar de ter sido
+//detectado como true
 
 function readFormula(FileName){
     let fs = require ('fs');
@@ -124,30 +135,29 @@ function nextAssignment(currentAssignment) {
     return newAssignment;
 }
 
-function doSolve(clauses, assignment, count) {
-    console.log(count)
+function doSolve(clauses, assignment) {
+
+    let count = 0;
     let isSat = false;
     let clauseValue = false;
     let expressionValue = true;
-    
 
+    while ((!isSat) && (count < Math.pow(2, assignment.length))) {
+        expressionValue = true;
 
-    while ((!isSat) && (count != Math.pow(2, assignment.length))) {
-        
         for (i = 0; i < clauses.length && expressionValue; i++) {
             //checa enquanto a todas as clausulas são true (se for falsa, a expressão toda é falsa)
             clauseValue = false;
 
             for (j = 0; j < clauses[i].length && !clauseValue; j++) {
                 //checa enquanto a clausula for falsa (se uma for verdadeira, a clausula toda é verdadeira)
-                
 
-                if (clauses[i][j] > 0){
-                    if(assignment[Math.abs(clauses[i][j]) - 1] == 1){
+                if (parseInt(clauses[i][j]) > 0){
+                    if(assignment[Math.abs(parseInt(clauses[i][j])) - 1] == 1){
                         clauseValue = true;
                     }
                 } else {
-                    if(assignment[Math.abs(clauses[i][j]) - 1] == 0){
+                    if(assignment[Math.abs(parseInt(clauses[i][j])) - 1] == 0){
                         clauseValue = true;
                     }
                 }
@@ -162,10 +172,9 @@ function doSolve(clauses, assignment, count) {
 
         if (expressionValue){
             isSat = true;
-        } else if (!isSat && count!= Math.pow(2, assignment.length)){
+        } else {
             assignment = nextAssignment(assignment);
-            
-            doSolve(clauses,assignment, count + 1);
+            count++;            
         }
 
     }
@@ -176,7 +185,6 @@ function doSolve(clauses, assignment, count) {
         result.satisfyingAssignment = assignment;
     }
 
-    
     return result;
 }
 

@@ -25,18 +25,56 @@ function nextAssignment(currentAssignment) {
 }
 
 function doSolve(clauses, assignment) {
-  let isSat = false
-  while ((!isSat) && /* must check whether this is the last assignment or not*/) {
-    // does this assignment satisfy the formula? If so, make isSat true. 
 
-    // if not, get the next assignment and try again. 
-    assignment = nextAssignment(assignment)
+  let count = 0;
+  let isSat = false;
+  let clauseValue = false;
+  let expressionValue = true;
+
+  while ((!isSat) && (count < Math.pow(2, assignment.length))) {
+      expressionValue = true;
+
+      for (i = 0; i < clauses.length && expressionValue; i++) {
+          //checa enquanto a todas as clausulas são true (se for falsa, a expressão toda é falsa)
+          clauseValue = false;
+
+          for (j = 0; j < clauses[i].length && !clauseValue; j++) {
+              //checa enquanto a clausula for falsa (se uma for verdadeira, a clausula toda é verdadeira)
+
+              if (parseInt(clauses[i][j]) > 0){
+                  if(assignment[Math.abs(parseInt(clauses[i][j])) - 1] == 1){
+                      clauseValue = true;
+                  }
+              } else {
+                  if(assignment[Math.abs(parseInt(clauses[i][j])) - 1] == 0){
+                      clauseValue = true;
+                  }
+              }
+
+          }
+
+          if (!clauseValue){
+              expressionValue = false;
+          }
+          
+      }
+
+      if (expressionValue){
+          isSat = true;
+      } else {
+          assignment = nextAssignment(assignment);
+          count++;            
+      }
+
   }
-  let result = {'isSat': isSat, satisfyingAssignment: null}
-  if (isSat) {
-    result.satisfyingAssignment = assignment
+
+  let result = {'isSat': isSat, satisfyingAssignment: null};
+
+  if(isSat){
+      result.satisfyingAssignment = assignment;
   }
-  return result
+
+  return result;
 }
   
 function readFormula(fileName) {
