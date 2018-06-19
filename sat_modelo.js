@@ -20,7 +20,6 @@ function readFormula(FileName) {
   if (specOk) {
     result.clauses = clauses;
     result.variables = variables;
-    console.log('AEEEE PORRA');
   }
     
   return result;
